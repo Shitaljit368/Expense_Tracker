@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "912237154118",
+    "project_id": "expense-login-cc576",
+    "storage_bucket": "expense-login-cc576.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:912237154118:android:e229b3cc508e3661705f47",
+        "android_client_info": {
+          "package_name": "com.example.exptracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "912237154118-0mfl4eshtfah2on23a9usumagvcjntcg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDcXfnTkuVTjxxLMPYqUFGSEA99Ul-VbVs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "912237154118-0mfl4eshtfah2on23a9usumagvcjntcg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
