@@ -1,3 +1,4 @@
+import 'package:exptracker/Src/Main_Page/Home_page_widgets/read_data_expense.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
@@ -16,6 +17,7 @@ class _MyIncomeListPageState extends State<MyIncomeListPage> {
   TextEditingController amountController = TextEditingController();
   TextEditingController dateInputController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     dateInputController.text = ""; //set the initial value of text field
@@ -234,6 +236,7 @@ class _MyIncomeListPageState extends State<MyIncomeListPage> {
           const SizedBox(
             height: 10,
           ),
+          const IncomeData(),
         ],
       ),
     );

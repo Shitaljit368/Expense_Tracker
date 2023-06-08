@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -86,6 +87,10 @@ class _SignInPageState extends State<SignInPage> {
     } else {
       return false;
     }
+  }
+  void saveEmail() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("emai", emailController.text);
   }
 
   bool visibility = false;
@@ -282,6 +287,7 @@ class _SignInPageState extends State<SignInPage> {
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
                                 createAccount();
+                                saveEmail();
                               } else {
                                 EasyLoading.showError("Please fill all form");
                               }

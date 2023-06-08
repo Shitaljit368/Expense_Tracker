@@ -1,20 +1,21 @@
 var userData = {
-  "user_profiles": [
-    {
-      "name": "",
-      "email": "",
-    }
-  ],
+
   "future_plans": [
     {
-      "plan": "New Car",
+      "name": "New Car",
       "image": "",
       "amount": "25,00000",
       "date": "07-06-2023",
     }
   ],
   "incomes": [
-    {"total_expenses": ""},
+   
+    {
+      "name": "Gpay from friend",
+      "image": "",
+      "amount": "700",
+      "date": "07-06-2023",
+    },
     {
       "name": "Gpay from friend",
       "image": "",
@@ -23,7 +24,7 @@ var userData = {
     }
   ],
   "expenses": [
-    {"total_expenses": ""},
+    
     {
       "name": "momo",
       "image": "",

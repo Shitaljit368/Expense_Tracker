@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
-
 import '../../Constant/colors.dart';
 
 class MyExpenseListPage extends StatefulWidget {
@@ -15,16 +14,32 @@ class MyExpenseListPage extends StatefulWidget {
 class _MyExpenseListPageState extends State<MyExpenseListPage> {
 
   final CollectionReference expenseRef =
-      FirebaseFirestore.instance.collection('expenses');
-  // void addUser(String expenseName, int amount, String date, ) {
-  // // Add a new document with a generated ID to the "users" collection
-  // usersRef.doc().set(
-  //   'name_of_expense': expenseName,
-  //   'email': amount,
-  //   'date': date,)
-  // }
-  // .then((value) => print("User added successfully"))
-  // .catchError((error) => print("Failed to add user: $error"));
+    FirebaseFirestore.instance.collection('users');
+// void addDataToFirestore() async {
+//   try {
+//     FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+//     // Specify the collection and document ID where you want to add the data
+//     String collection = 'users';
+//     String documentId = 'your-document-id';
+
+//     // Create a map of the data you want to add
+//     Map<String, dynamic> data = {
+//       'amount': 'value1',
+//       'date': 'value2',
+//       // Add more fields as needed
+//     };
+
+//     // Add the data to Firestore
+//     await firestore.collection(collection).doc(documentId).set(data);
+
+//     print('Data added to Firestore successfully');
+//   } catch (e) {
+//     print('Error adding data to Firestore: $e');
+//   }
+// }
+
+
   TextEditingController expnameController = TextEditingController();
   TextEditingController amountController = TextEditingController();
   TextEditingController dateInputController = TextEditingController();

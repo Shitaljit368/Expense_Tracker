@@ -3,13 +3,13 @@ import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../Constant/colors.dart';
 import '../Router/router.gr.dart';
 import 'drawer_item.dart';
 
 class DashBoardPage extends StatefulWidget {
   const DashBoardPage({super.key});
-
   @override
   State<DashBoardPage> createState() => _DashBoardPageState();
 }
@@ -19,6 +19,20 @@ class _DashBoardPageState extends State<DashBoardPage> {
 
   Future signUserOut() async {
     await FirebaseAuth.instance.signOut();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    getEmail();
+    super.initState();
+  }
+
+  String? email;
+  void getEmail() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    email = prefs.getString("email");
+    setState(() {});
   }
 
   @override
@@ -52,50 +66,54 @@ class _DashBoardPageState extends State<DashBoardPage> {
                     color: Theme.of(context).colorScheme.primary,
                   ),
                   child: Column(
-                    children: const [
-                      CircleAvatar(
+                    children:  [
+                      const CircleAvatar(
                         radius: 45,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 7,
                       ),
-                      Text(
+                      const Text(
                         "Kh Shitaljit",
                         style: TextStyle(
                           fontSize: 18,
                         ),
                       ),
-                      SizedBox(height: 3),
+                      const SizedBox(height: 3),
                       Text(
-                        "khShital@gmail.com",
-                        style: TextStyle(fontSize: 14, color: Colors.green),
+                        email ?? " ",
+                        style: const TextStyle(fontSize: 14, color: Colors.green),
                       ),
                     ],
                   ),
                 ),
                 Column(
-                  children:   [
+                  children: [
                     const DrawerItem(
-
                       name: "Settings",
                       icon: CupertinoIcons.settings_solid,
                     ),
                     const SizedBox(
                       height: 5,
                     ),
-                    const DrawerItem(name: "About", icon: CupertinoIcons.info_circle),
+                    const DrawerItem(
+                        name: "About", icon: CupertinoIcons.info_circle),
                     const SizedBox(
                       height: 5,
                     ),
-                    const DrawerItem(name: "Feedback", icon: Icons.message_outlined),
+                    const DrawerItem(
+                        name: "Feedback", icon: Icons.message_outlined),
                     const SizedBox(
                       height: 5,
                     ),
-                     GestureDetector(
-                      onTap: () {
-                        signUserOut();
-                      },
-                      child: const DrawerItem(name: "Logout", icon: Icons.logout_rounded, )),
+                    GestureDetector(
+                        onTap: () {
+                          signUserOut();
+                        },
+                        child: const DrawerItem(
+                          name: "Logout",
+                          icon: Icons.logout_rounded,
+                        )),
                     const SizedBox(
                       height: 5,
                     ),
