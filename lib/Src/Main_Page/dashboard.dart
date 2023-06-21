@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../AppBarTheme/custom_theme.dart';
+import '../../Color_Themes/dark_theme.dart';
 import '../../Constant/colors.dart';
 import '../Router/router.gr.dart';
 import 'drawer_item.dart';
@@ -28,6 +30,14 @@ class _DashBoardPageState extends State<DashBoardPage> {
     super.initState();
   }
 
+  bool themeController = false;
+  isDark() {
+    if (themeController == false) {
+      return themeData;
+    }
+    return darkTheme;
+  }
+
   String? email;
   void getEmail() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -40,87 +50,182 @@ class _DashBoardPageState extends State<DashBoardPage> {
     return SafeArea(
       child: AutoTabsScaffold(
         appBarBuilder: (context, tabsRouter) {
+          tabName() {
+            if (context.tabsRouter.activeIndex == 0) {
+              return "Home";
+            }
+            return "Analytics";
+          }
+
           return AppBar(
             centerTitle: true,
-            title: Text(context.topRoute.name),
+            title: Text(tabName()),
             elevation: 0,
           );
         },
-        drawer: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 150),
-          child: Drawer(
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(20),
-              ),
-            ),
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            child: ListView(
-              children: [
-                DrawerHeader(
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    ),
-                    color: Theme.of(context).colorScheme.primary,
+        drawer: Drawer(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topRight: Radius.circular(37),
+                bottomRight: Radius.circular(37)),
+          ),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          child: ListView(
+            children: [
+              DrawerHeader(
+                  decoration: const BoxDecoration(
+                    color: Colors.black,
+                    borderRadius:
+                        BorderRadius.only(topRight: Radius.circular(36)),
                   ),
-                  child: Column(
-                    children:  [
-                      const CircleAvatar(
-                        radius: 45,
-                      ),
-                      const SizedBox(
-                        height: 7,
-                      ),
-                      const Text(
-                        "Kh Shitaljit",
-                        style: TextStyle(
-                          fontSize: 18,
-                        ),
-                      ),
-                      const SizedBox(height: 3),
-                      Text(
-                        email ?? " ",
-                        style: const TextStyle(fontSize: 14, color: Colors.green),
-                      ),
-                    ],
+                  child: Image.asset(
+                    "assests/images/finallogo.png",
+                    fit: BoxFit.cover,
+                  )),
+              Column(
+                children: [
+                  const SizedBox(
+                    height: 5,
                   ),
-                ),
-                Column(
-                  children: [
-                    const DrawerItem(
-                      name: "Settings",
-                      icon: CupertinoIcons.settings_solid,
+                  MaterialButton(
+                    onPressed: () {Navigator.pop(context);},
+                    child: const DrawerItem(
+                      name: "Documentation",
+                      icon: CupertinoIcons.folder,
                     ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    const DrawerItem(
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  MaterialButton(
+                    onPressed: () {Navigator.pop(context);},
+                    child: const DrawerItem(
                         name: "About", icon: CupertinoIcons.info_circle),
-                    const SizedBox(
-                      height: 5,
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  MaterialButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const DrawerItem(
+                      name: "Share",
+                      icon: Icons.share,
                     ),
-                    const DrawerItem(
-                        name: "Feedback", icon: Icons.message_outlined),
-                    const SizedBox(
-                      height: 5,
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  MaterialButton(
+                    onPressed: () {
+                      setState(() {
+                        themeController = !themeController;
+                       
+                      });
+                      
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      child: Row(
+                        children: [
+                          Switch(
+                            value: themeController,
+                            activeColor: Colors.black,
+                            onChanged: (value) {},
+                          ),
+                          const Text(
+                            "Dark Theme",
+                            style: TextStyle(fontSize: 20),
+                          )
+                        ],
+                      ),
                     ),
-                    GestureDetector(
-                        onTap: () {
-                          signUserOut();
-                        },
-                        child: const DrawerItem(
-                          name: "Logout",
-                          icon: Icons.logout_rounded,
-                        )),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  MaterialButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              backgroundColor: Theme.of(context).colorScheme.background,
+                              title: Column(
+                                children: [
+                                  const Text("Are you sure?"),
+                                  const SizedBox(
+                                    height: 30,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      SizedBox(
+                                        height: 50,
+                                        width: 90,
+                                        child: ElevatedButton(
+                                            style: const ButtonStyle(
+                                                backgroundColor:
+                                                    MaterialStatePropertyAll(
+                                                        Colors.grey)),
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text(
+                                              "No",
+                                            )),
+                                      ),
+                                      SizedBox(
+                                        height: 50,
+                                        width: 90,
+                                        child: ElevatedButton(
+                                            style: const ButtonStyle(
+                                                backgroundColor:
+                                                    MaterialStatePropertyAll(
+                                                        Colors.red)),
+                                            onPressed: () {signUserOut();},
+                                            child: const Text(
+                                              "Yes",
+                                            )),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      child: const DrawerItem(
+                        
+                        name: "Logout",
+                        icon: Icons.logout_rounded,
+                      )),
+                  const SizedBox(
+                    height: 275,
+                  ),
+                  const Divider(
+                    color: Colors.black26,
+                    endIndent: 20,
+                    indent: 20,
+                    thickness: 2,
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  const Text(
+                    "Shital",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  Text(
+                    "${user.email}",
+                    style: const TextStyle(fontSize: 16, color: Colors.blue),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
         animationCurve: Curves.linear,

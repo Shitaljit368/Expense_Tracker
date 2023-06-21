@@ -10,7 +10,7 @@ ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
   colorScheme: ColorScheme.dark(
     background: Colors.black,
-    
+
     primary: Colors.grey.shade800,
     primaryContainer: Colors.white,
     secondary: Colors.grey.shade800, //bottom sheet

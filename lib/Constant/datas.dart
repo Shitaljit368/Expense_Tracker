@@ -7,17 +7,18 @@ var userData = {
       "amount": "25,00000",
       "date": "07-06-2023",
     }
+
   ],
   "incomes": [
    
     {
-      "name": "Gpay from friend",
+      "name": "second",
       "image": "",
       "amount": "700",
       "date": "07-06-2023",
     },
     {
-      "name": "Gpay from friend",
+      "name": "third",
       "image": "",
       "amount": "700",
       "date": "07-06-2023",

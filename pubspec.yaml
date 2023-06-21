@@ -59,6 +59,7 @@ dependencies:
   fl_chart: ^0.62.0
   intl: ^0.18.1
   flutter_slidable: ^3.0.0
+  progress_state_button: ^1.0.4
   
   
   

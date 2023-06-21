@@ -7,7 +7,6 @@ import 'package:exptracker/Src/Forgot_password_module/verify_password.dart';
 import 'package:exptracker/Src/Login_module/Page/login_page.dart';
 import 'package:exptracker/Src/Sign_in_module/Page/sign_in.dart';
 
-
 import '../../Core/auth_flow_page.dart';
 import '../../Utility/firebase_authentication.dart';
 import '../Main_Page/chart_page.dart';
@@ -26,7 +25,6 @@ import '../Main_Page/list_of_savings.dart';
     AutoRoute(page: SavePasswordPage),
     AutoRoute(page: GetStartedPage),
     AutoRoute(page: AuthPage),
-    
     AutoRoute(page: MyExpenseListPage),
     AutoRoute(page: MySavingsListPage),
     AutoRoute(page: MyIncomeListPage),
@@ -44,7 +42,6 @@ import '../Main_Page/list_of_savings.dart';
           ],
         ),
         AutoRoute(page: LoginPage),
-        
       ],
     ),
   ],

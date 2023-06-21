@@ -9,7 +9,7 @@ class ChartPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.grey[300],
+        backgroundColor: Theme.of(context).colorScheme.background,
         body: Center(
           child: Column(
             children: [
@@ -31,7 +31,7 @@ class ChartPage extends StatelessWidget {
                         height: 350,
                         child: BarChart(
                           BarChartData(
-                            backgroundColor: grey.withOpacity(0.1),
+                              backgroundColor: grey.withOpacity(0.1),
                               borderData: FlBorderData(
                                 show: false,
                               ),
@@ -53,8 +53,16 @@ class ChartPage extends StatelessWidget {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: const [
-                                  Text("Income", style: TextStyle(color: white, fontSize: 18),),
-                                  Text("4000",style: TextStyle(color: white, fontSize: 20),)
+                                  Text(
+                                    "Income",
+                                    style:
+                                        TextStyle(color: white, fontSize: 18),
+                                  ),
+                                  Text(
+                                    "4000",
+                                    style:
+                                        TextStyle(color: white, fontSize: 20),
+                                  )
                                 ],
                               ),
                             ),
@@ -64,11 +72,19 @@ class ChartPage extends StatelessWidget {
                               decoration: BoxDecoration(
                                   color: grey.withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(20)),
-                                  child: Column(
+                              child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: const [
-                                  Text("Expense",style: TextStyle(color: white, fontSize: 18),),
-                                  Text("3000",style: TextStyle(color: white, fontSize: 20),)
+                                  Text(
+                                    "Expense",
+                                    style:
+                                        TextStyle(color: white, fontSize: 18),
+                                  ),
+                                  Text(
+                                    "3000",
+                                    style:
+                                        TextStyle(color: white, fontSize: 20),
+                                  )
                                 ],
                               ),
                             ),
@@ -83,9 +99,9 @@ class ChartPage extends StatelessWidget {
               Expanded(
                 flex: 1,
                 child: Container(
-                  decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
+                  decoration: BoxDecoration(
+                       color: Theme.of(context).colorScheme.primary,
+                      borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(20),
                         topRight: Radius.circular(20),
                       )),

@@ -1,6 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
+import 'dart:developer';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 class IncomeData extends StatefulWidget {
   const IncomeData({super.key});
@@ -10,96 +12,87 @@ class IncomeData extends StatefulWidget {
 }
 
 class _IncomeDataState extends State<IncomeData> {
+  final user = FirebaseAuth.instance.currentUser!;
+  // FirebaseFirestore firestore = FirebaseFirestore.instance;
   CollectionReference data = FirebaseFirestore.instance.collection('users');
-  Future<void> updateUser() {
-    return data
-        .doc("tomtom@gmail.com")
-        .update({"name": [
-            
-        ]})
-        .then((value) => print("User Updated"))
-        .catchError((error) => print("Failed to update user: $error"));
-  }
+
+  // Future<void> updateUser() {
+  //   return data
+  //       .doc("tomtom@gmail.com")
+  //       .update({"name": []})
+  //       .then((value) => print("User Updated"))
+  //       .catchError((error) => print("Failed to update user: $error"));
+  // }
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection("users").snapshots(),
+      stream: FirebaseFirestore.instance
+          .collection("users")
+          .doc("tomtom@gmail.com")
+          .snapshots(),
       builder: (context,
-          AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+          AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
         if (snapshot.data == null) {
           return const CircularProgressIndicator.adaptive();
         } else {
-          List<Map<String, dynamic>> myDatas = snapshot.data!.docs.map((e) {
-            return e.data();
-          }).toList();
+          Map<String, dynamic> data =
+              snapshot.data!.data() as Map<String, dynamic>;
+          log(data["incomes"].toString());
           return ListView.builder(
-            physics: const BouncingScrollPhysics(),
             shrinkWrap: true,
-            itemCount: myDatas.length,
-            itemBuilder: (context, i) {
-              return ListView.builder(
-                shrinkWrap: true,
-                itemCount: myDatas[i]["incomes"].length,
-                itemBuilder: (context, j) {
-                  var p = myDatas[i]["incomes"][j];
-                  return Slidable(
-                    endActionPane:
-                        ActionPane(motion: const ScrollMotion(), children: [
-                      SlidableAction(
-                        backgroundColor: Colors.red,
-                        label: "Delete",
-                        onPressed: (context) {},
-                        icon: Icons.delete,
-                      )
-                    ]),
-                    startActionPane: ActionPane(
-                        motion: const ScrollMotion(),
-                        // dismissible: DismissiblePane(onDismissed: () {}),
-                        children: [
-                          SlidableAction(
-                            label: "Edit",
-                            backgroundColor: Colors.green,
-                            onPressed: (context) {
-                              updateUser();
-                              // const SnackBar(
-                              //   content: Text("Edit data?"),
-                              // );
-                            },
-                            icon: Icons.edit,
-                          )
-                        ]),
-                    child: ListTile(
-                      leading: Container(
-                        height: 50,
-                        width: 50,
-                        decoration: BoxDecoration(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .secondaryContainer,
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Text(
-                              "🚘",
-                              style: TextStyle(fontSize: 30),
-                            ),
-                          ],
-                        ),
-                      ),
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(p["name"].toString()),
-                          Text(p["amount"].toString()),
-                        ],
-                      ),
-                      subtitle: Text(p["date"].toString()),
-                      // trailing: Text(p["amount"].toString()),
+            itemCount: data["incomes"].length,
+            itemBuilder: (context, index) {
+              var p = data["incomes"][index];
+              return Slidable(
+                key: const ValueKey(0),
+                startActionPane: ActionPane(
+                  // A motion is a widget used to control how the pane animates.
+                  motion: const ScrollMotion(),
+
+                  // A pane can dismiss the Slidable.
+                  dismissible: DismissiblePane(onDismissed: () {}),
+
+                  // All actions are defined in the children parameter.
+                  children: [
+                    // A SlidableAction can have an icon and/or a label.
+                    SlidableAction(
+                      onPressed: (context) {},
+                      backgroundColor: Colors.green,
+                      foregroundColor: Colors.white,
+                      icon: Icons.edit,
+                      label: 'Edit',
                     ),
-                  );
-                },
+                  ],
+                ),
+                endActionPane: ActionPane(
+                  motion: const ScrollMotion(),
+                  children: [
+                    SlidableAction(
+                      onPressed: (context) {},
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                      icon: Icons.delete,
+                      label: "Delete",
+                    ),
+                  ],
+                ),
+                child: ListTile(
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        p["name"].toString(),
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                      Text(
+                        p["amount"].toString(),
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                    ],
+                  ),
+                  subtitle: Text(p["date"].toString()),
+                ),
               );
             },
           );
