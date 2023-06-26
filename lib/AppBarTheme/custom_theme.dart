@@ -11,6 +11,7 @@ ThemeData themeData = ThemeData(
     secondary: Colors.grey.shade300, //bottom sheet
     secondaryContainer: Colors.grey.shade200,
     inversePrimary: white,//botton sheet cancel button
+    onSecondary: Colors.black12
   ),
   appBarTheme: AppBarTheme(
     backgroundColor: opBlack,

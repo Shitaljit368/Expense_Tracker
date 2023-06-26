@@ -25,7 +25,6 @@ class _DashBoardPageState extends State<DashBoardPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     getEmail();
     super.initState();
   }
@@ -52,9 +51,9 @@ class _DashBoardPageState extends State<DashBoardPage> {
         appBarBuilder: (context, tabsRouter) {
           tabName() {
             if (context.tabsRouter.activeIndex == 0) {
-              return "Home";
+              return "HOME";
             }
-            return "Analytics";
+            return "ANALYTICS";
           }
 
           return AppBar(
@@ -88,7 +87,9 @@ class _DashBoardPageState extends State<DashBoardPage> {
                     height: 5,
                   ),
                   MaterialButton(
-                    onPressed: () {Navigator.pop(context);},
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                     child: const DrawerItem(
                       name: "Documentation",
                       icon: CupertinoIcons.folder,
@@ -98,7 +99,9 @@ class _DashBoardPageState extends State<DashBoardPage> {
                     height: 5,
                   ),
                   MaterialButton(
-                    onPressed: () {Navigator.pop(context);},
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                     child: const DrawerItem(
                         name: "About", icon: CupertinoIcons.info_circle),
                   ),
@@ -114,34 +117,32 @@ class _DashBoardPageState extends State<DashBoardPage> {
                       icon: Icons.share,
                     ),
                   ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  MaterialButton(
-                    onPressed: () {
-                      setState(() {
-                        themeController = !themeController;
-                       
-                      });
-                      
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: Row(
-                        children: [
-                          Switch(
-                            value: themeController,
-                            activeColor: Colors.black,
-                            onChanged: (value) {},
-                          ),
-                          const Text(
-                            "Dark Theme",
-                            style: TextStyle(fontSize: 20),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
+                  // const SizedBox(
+                  //   height: 5,
+                  // ),
+                  // MaterialButton(
+                  //   onPressed: () {
+                  //     setState(() {
+                  //       themeController = !themeController;
+                  //     });
+                  //   },
+                  //   child: Padding(
+                  //     padding: const EdgeInsets.symmetric(horizontal: 5),
+                  //     child: Row(
+                  //       children: [
+                  //         Switch(
+                  //           value: themeController,
+                  //           activeColor: Colors.black,
+                  //           onChanged: (value) {},
+                  //         ),
+                  //         const Text(
+                  //           "Dark Theme",
+                  //           style: TextStyle(fontSize: 20),
+                  //         )
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                   const SizedBox(
                     height: 5,
                   ),
@@ -150,61 +151,77 @@ class _DashBoardPageState extends State<DashBoardPage> {
                         showDialog(
                           context: context,
                           builder: (context) {
-                            return AlertDialog(
-                              backgroundColor: Theme.of(context).colorScheme.background,
-                              title: Column(
-                                children: [
-                                  const Text("Are you sure?"),
-                                  const SizedBox(
-                                    height: 30,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      SizedBox(
-                                        height: 50,
-                                        width: 90,
-                                        child: ElevatedButton(
-                                            style: const ButtonStyle(
-                                                backgroundColor:
-                                                    MaterialStatePropertyAll(
-                                                        Colors.grey)),
-                                            onPressed: () {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 50, vertical: 310),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Text(
+                                      "Are you sure?",
+                                      style: TextStyle(fontSize: 25),
+                                    ),
+                                    const SizedBox(
+                                      height: 35,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        TextButton(
+                                          style: ButtonStyle(
+                                            overlayColor:
+                                                MaterialStatePropertyAll(
+                                                    Colors.grey.shade300),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text(
+                                            "NO",
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.redAccent),
+                                          ),
+                                        ),
+                                        TextButton(
+                                          style: ButtonStyle(
+                                            overlayColor:
+                                                MaterialStatePropertyAll(
+                                                    Colors.grey.shade300),
+                                          ),
+                                          onPressed: () {
+                                            signUserOut().whenComplete(() {
                                               Navigator.pop(context);
-                                            },
-                                            child: const Text(
-                                              "No",
-                                            )),
-                                      ),
-                                      SizedBox(
-                                        height: 50,
-                                        width: 90,
-                                        child: ElevatedButton(
-                                            style: const ButtonStyle(
-                                                backgroundColor:
-                                                    MaterialStatePropertyAll(
-                                                        Colors.red)),
-                                            onPressed: () {signUserOut();},
-                                            child: const Text(
-                                              "Yes",
-                                            )),
-                                      ),
-                                    ],
-                                  )
-                                ],
+                                            });
+                                          },
+                                          child: const Text(
+                                            "YES",
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.teal),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             );
                           },
                         );
                       },
                       child: const DrawerItem(
-                        
                         name: "Logout",
                         icon: Icons.logout_rounded,
                       )),
                   const SizedBox(
-                    height: 275,
+                    height: 330,
                   ),
                   const Divider(
                     color: Colors.black26,
@@ -213,15 +230,35 @@ class _DashBoardPageState extends State<DashBoardPage> {
                     thickness: 2,
                   ),
                   const SizedBox(
-                    height: 5,
+                    height: 7,
                   ),
-                  const Text(
-                    "Shital",
-                    style: TextStyle(fontSize: 18),
-                  ),
-                  Text(
-                    "${user.email}",
-                    style: const TextStyle(fontSize: 16, color: Colors.blue),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   children: const [
+                  //     Icon(
+                  //       Icons.person_3_rounded,
+                  //       color: grey,
+                  //       size: 20,
+                  //     ),
+                  //     Text(
+                  //       " Shital",
+                  //       style: TextStyle(fontSize: 20),
+                  //     ),
+                  //   ],
+                  // ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.mail,
+                        color: grey,
+                      ),
+                      Text(
+                        "  ${user.email}",
+                        style:
+                            const TextStyle(fontSize: 16, color: Colors.teal),
+                      ),
+                    ],
                   ),
                 ],
               ),

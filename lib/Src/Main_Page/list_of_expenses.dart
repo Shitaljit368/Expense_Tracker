@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
 import '../../Constant/colors.dart';
+import 'Home_page_widgets/read_expense_data.dart';
 
 class MyExpenseListPage extends StatefulWidget {
   const MyExpenseListPage({super.key});
@@ -12,35 +13,10 @@ class MyExpenseListPage extends StatefulWidget {
 }
 
 class _MyExpenseListPageState extends State<MyExpenseListPage> {
-
   final CollectionReference expenseRef =
-    FirebaseFirestore.instance.collection('users');
-// void addDataToFirestore() async {
-//   try {
-//     FirebaseFirestore firestore = FirebaseFirestore.instance;
+      FirebaseFirestore.instance.collection('users');
 
-//     // Specify the collection and document ID where you want to add the data
-//     String collection = 'users';
-//     String documentId = 'your-document-id';
-
-//     // Create a map of the data you want to add
-//     Map<String, dynamic> data = {
-//       'amount': 'value1',
-//       'date': 'value2',
-//       // Add more fields as needed
-//     };
-
-//     // Add the data to Firestore
-//     await firestore.collection(collection).doc(documentId).set(data);
-
-//     print('Data added to Firestore successfully');
-//   } catch (e) {
-//     print('Error adding data to Firestore: $e');
-//   }
-// }
-
-
-  TextEditingController expnameController = TextEditingController();
+  TextEditingController remarkController = TextEditingController();
   TextEditingController amountController = TextEditingController();
   TextEditingController dateInputController = TextEditingController();
 
@@ -74,11 +50,11 @@ class _MyExpenseListPageState extends State<MyExpenseListPage> {
                       backgroundColor: Theme.of(context).colorScheme.secondary,
                       context: context,
                       isScrollControlled: true,
-                      isDismissible: false,
                       builder: (context) => Padding(
                         padding: EdgeInsets.only(
-                            right: 40,
-                            left: 40,
+                            top: 0,
+                            right: 25,
+                            left: 25,
                             bottom: MediaQuery.of(context).viewInsets.bottom),
                         child: Form(
                           key: _formKey,
@@ -89,9 +65,12 @@ class _MyExpenseListPageState extends State<MyExpenseListPage> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
                                   Container(
                                     height: 5,
-                                    width: 100,
+                                    width: 70,
                                     decoration: BoxDecoration(
                                         color: opBlack,
                                         borderRadius:
@@ -104,12 +83,107 @@ class _MyExpenseListPageState extends State<MyExpenseListPage> {
                               ),
                               const Center(
                                 child: Text(
-                                  "Create a new expense item",
+                                  "Create a new income item",
                                   style: TextStyle(fontSize: 18),
                                 ),
                               ),
+                              const SizedBox(height: 15.0),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    width: 180,
+                                    child: TextFormField(
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Please enter some text';
+                                        }
+                                        return null;
+                                      },
+                                      onTap: () async {
+                                        DateTime? pickedDate =
+                                            await showDatePicker(
+                                          context: context,
+                                          initialDate: DateTime.now(),
+                                          firstDate: DateTime(1990),
+                                          lastDate: DateTime(2050),
+                                          builder: (context, child) {
+                                            return Theme(
+                                              data: Theme.of(context).copyWith(
+                                                colorScheme: ColorScheme.light(
+                                                  primary: Colors.teal,
+                                                  onPrimary: Colors.white,
+                                                  onSurface: Theme.of(context)
+                                                      .colorScheme
+                                                      .primaryContainer,
+                                                ),
+                                                textButtonTheme:
+                                                    TextButtonThemeData(
+                                                  style: TextButton.styleFrom(
+                                                    foregroundColor:
+                                                        Theme.of(context)
+                                                            .colorScheme
+                                                            .primaryContainer,
+                                                    // button text color
+                                                  ),
+                                                ),
+                                              ),
+                                              child: child!,
+                                            );
+                                          },
+                                        );
+
+                                        if (pickedDate != null) {
+                                          String formattedDate =
+                                              DateFormat('d,EEE,y')
+                                                  .format(pickedDate);
+                                          setState(() {
+                                            dateInputController.text =
+                                                formattedDate;
+                                          });
+                                        } else {}
+                                      },
+                                      style: const TextStyle(fontSize: 16),
+                                      readOnly: true,
+                                      controller: dateInputController,
+                                      decoration: const InputDecoration(
+                                          hintText: "Date",
+                                          hintStyle:
+                                              TextStyle(color: Colors.grey),
+                                          prefixIcon: Icon(
+                                            Icons.calendar_today,
+                                          ),
+                                          prefixIconColor: Colors.grey),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 155,
+                                    child: TextFormField(
+                                      keyboardType: const TextInputType
+                                          .numberWithOptions(),
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Please enter some text';
+                                        }
+                                        return null;
+                                      },
+                                      style: const TextStyle(fontSize: 18),
+                                      decoration: InputDecoration(
+                                        hintText: 'Amount',
+                                        hintStyle:
+                                            TextStyle(color: Colors.grey[500]),
+                                        prefixIcon: Icon(
+                                          Icons.currency_rupee,
+                                          color: grey[500],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                               const SizedBox(
-                                height: 20,
+                                height: 8.0,
                               ),
                               TextFormField(
                                 validator: (value) {
@@ -118,69 +192,14 @@ class _MyExpenseListPageState extends State<MyExpenseListPage> {
                                   }
                                   return null;
                                 },
-                                onTap: () async {
-                                  DateTime? pickedDate = await showDatePicker(
-
-                                    context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate: DateTime(1990),
-                                    //DateTime.now() - not to allow to choose before today.
-                                    lastDate: DateTime(2050),
-                                  );
-
-                                  if (pickedDate != null) {
-                                    // print(
-                                    //     pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
-                                    String formattedDate =
-                                        DateFormat('dd-MM-yyyy')
-                                            .format(pickedDate);
-
-                                    // print(
-                                    //     formattedDate); //formatted date output using intl package =>  2021-03-16
-                                    setState(() {
-                                      dateInputController.text = formattedDate;
-                                      //set output date to TextField value.
-                                    });
-                                  } else {}
-                                },
-                                readOnly: true,
-                                controller: dateInputController,
-                                decoration: const InputDecoration(
-                                    hintText: 'Enter Date',
-                                    hintStyle: TextStyle(color: grey),
-                                    prefixIcon: Icon(
-                                      Icons.calendar_today,
-                                      color: grey,
-                                    )),
-                              ),
-                              const SizedBox(height: 8.0),
-                              TextFormField(
-                                controller: expnameController,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter some text';
-                                  }
-                                  return null;
-                                },
-                                style: const TextStyle(fontSize: 20),
-                                decoration: const InputDecoration(
-                                  hintText: 'Expense Item',
-                                  hintStyle: TextStyle(color: grey),
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              TextFormField(
-                                controller: amountController,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter some text';
-                                  }
-                                  return null;
-                                },
-                                style: const TextStyle(fontSize: 20),
-                                decoration: const InputDecoration(
-                                  hintText: 'Amount',
-                                  hintStyle: TextStyle(color: grey),
+                                style: const TextStyle(fontSize: 18),
+                                decoration: InputDecoration(
+                                  hintText: 'Remark',
+                                  prefixIcon: Icon(
+                                    Icons.edit,
+                                    color: grey[500],
+                                  ),
+                                  hintStyle: TextStyle(color: Colors.grey[500]),
                                 ),
                               ),
                               const SizedBox(
@@ -192,7 +211,7 @@ class _MyExpenseListPageState extends State<MyExpenseListPage> {
                                 children: [
                                   SizedBox(
                                     height: 60,
-                                    width: 145,
+                                    width: 160,
                                     child: ElevatedButton(
                                       style: ButtonStyle(
                                         overlayColor:
@@ -206,6 +225,8 @@ class _MyExpenseListPageState extends State<MyExpenseListPage> {
                                       ),
                                       onPressed: () {
                                         dateInputController.clear();
+                                        remarkController.clear();
+                                        amountController.clear();
                                         Navigator.pop(context);
                                       },
                                       child: Text(
@@ -217,12 +238,9 @@ class _MyExpenseListPageState extends State<MyExpenseListPage> {
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(
-                                    width: 20,
-                                  ),
                                   SizedBox(
                                     height: 60,
-                                    width: 145,
+                                    width: 160,
                                     child: ElevatedButton(
                                       style: ButtonStyle(
                                         backgroundColor:
@@ -260,73 +278,22 @@ class _MyExpenseListPageState extends State<MyExpenseListPage> {
           backgroundColor: Theme.of(context).colorScheme.background,
           body: Column(
             children: [
-              const SizedBox(
-                height: 10,
-              ),
-              Padding(
+              Container(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
+                height: 30,
+                width: double.infinity,
+                color: opBlack,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: const [
                     Text(
-                      "Total: 10,000",
-                      style: TextStyle(fontSize: 18),
+                      "Total: 1700",
+                      style: TextStyle(fontSize: 18, color: white),
                     ),
+                    ReadExpenseDataPage(),
                   ],
                 ),
               ),
-              const Divider(
-                color: grey,
-                endIndent: 15,
-                indent: 15,
-                thickness: 2,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              // Expanded(
-              //   child: ListView.builder(
-              //           physics: const BouncingScrollPhysics(),
-              //           // itemCount: data.length,
-              //           itemBuilder: (context, index) {
-              //             return Card(
-              //               color:Theme.of(context).colorScheme.primary,
-              //               child: ListTile(
-              //                 enableFeedback: true,
-              //                 leading: Container(
-              //                   height: 50,
-              //                   width: 50,
-              //                   decoration: BoxDecoration(
-              //                       color: Colors.grey[200],
-              //                       borderRadius:
-              //                           BorderRadius.circular(10)),
-              //                   child: Column(
-              //                     mainAxisAlignment:
-              //                         MainAxisAlignment.center,
-              //                     children: const [
-              //                       Text(
-              //                         "🚘",
-              //                         style: TextStyle(fontSize: 30),
-              //                       ),
-              //                     ],
-              //                   ),
-              //                 ),
-              //                 title: Row(
-              //                   mainAxisAlignment:
-              //                       MainAxisAlignment.spaceBetween,
-              //                   children: const [
-                                  
-                                  
-              //                   ],
-              //                 ),
-                              
-                                  
-              
-              //               ),
-              //             );
-              //           },
-              //         ),
-              // ),
             ],
           )),
     );

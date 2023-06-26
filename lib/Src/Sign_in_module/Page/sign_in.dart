@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:exptracker/Constant/colors.dart';
 import 'package:exptracker/Constant/datas.dart';
@@ -28,6 +30,7 @@ class _SignInPageState extends State<SignInPage> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   void createDocument() async {
+    
     try {
       await firestore
           .collection('users')
@@ -38,10 +41,10 @@ class _SignInPageState extends State<SignInPage> {
         Navigator.pop(context);
         EasyLoading.dismiss();
       });
-      print('Document created successfully');
+      log('Document created successfully');
     } catch (e) {
       EasyLoading.showError("Something went wrong", dismissOnTap: true);
-      print('Error creating document: $e');
+      log('Error creating document: $e');
     }
   }
 

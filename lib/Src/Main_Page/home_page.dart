@@ -4,11 +4,11 @@ import 'package:exptracker/Src/Router/router.gr.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
 import '../../Constant/colors.dart';
+import '../../Constant/sizes.dart';
 
 class ExpenseBoardPage extends StatefulWidget {
   const ExpenseBoardPage({super.key});
@@ -20,7 +20,7 @@ class ExpenseBoardPage extends StatefulWidget {
 class _ExpenseBoardPageState extends State<ExpenseBoardPage> {
   final user = FirebaseAuth.instance.currentUser!;
 
-  TextEditingController incomeController = TextEditingController();
+  TextEditingController remarkController = TextEditingController();
   TextEditingController amountController = TextEditingController();
   TextEditingController dateInputController = TextEditingController();
 
@@ -122,30 +122,12 @@ class _ExpenseBoardPageState extends State<ExpenseBoardPage> {
                       children: [
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
-                          height: 130,
+                          height: 140,
                           width: double.infinity,
                           decoration: BoxDecoration(
                             color: Colors.grey.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(15),
-                            // boxShadow: [
-                            //   const BoxShadow(
-                            //       blurRadius: 20,
-                            //       spreadRadius: 1,
-                            //       offset: Offset(5, 5),
-                            //       color: Colors.black),
-                            //   BoxShadow(
-                            //       blurRadius: 20,
-                            //       spreadRadius: 1,
-                            //       offset: const Offset(-5, -5),
-                            //       color:
-                            //           Colors.grey.shade800.withOpacity(0.6)),
-                            // ]
-                            //   gradient: LinearGradient(colors: [
-                            //     Colors.white,
-                            //     Colors.red,
-                            //     Colors.deepPurple.shade500,
-                            //     Colors.white,
-                            //   ]),
+                            // border: Border.all(color: Colors.white10)
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -168,40 +150,44 @@ class _ExpenseBoardPageState extends State<ExpenseBoardPage> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Column(
-                                    children: const [
+                                    children: [
                                       Text(
-                                        "Total income",
+                                        "TOTAL INCOME",
                                         style: TextStyle(
-                                            fontSize: 14,
-                                            color: grey,
+                                            fontSize: 13,
+                                            color: Colors.grey.shade400,
                                             fontWeight: FontWeight.bold),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         height: 10,
                                       ),
                                       Text(
                                         "+0",
                                         style: TextStyle(
-                                            fontSize: 26, color: grey),
+                                            fontSize: 26,
+                                            color: Colors.greenAccent
+                                                .withOpacity(0.5)),
                                       ),
                                     ],
                                   ),
                                   Column(
-                                    children: const [
+                                    children: [
                                       Text(
-                                        "Total expense",
+                                        "TOTAL EXPENSES",
                                         style: TextStyle(
-                                            fontSize: 14,
-                                            color: grey,
+                                            fontSize: 13,
+                                            color: Colors.grey.shade400,
                                             fontWeight: FontWeight.bold),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         height: 10,
                                       ),
                                       Text(
                                         "-0",
                                         style: TextStyle(
-                                            fontSize: 26, color: grey),
+                                            fontSize: 26,
+                                            color: Colors.redAccent
+                                                .withOpacity(0.8)),
                                       ),
                                     ],
                                   ),
@@ -224,9 +210,12 @@ class _ExpenseBoardPageState extends State<ExpenseBoardPage> {
                               onPressed: () => context.router.push(
                                 const MySavingsListRoute(),
                               ),
-                              child: Text(
+                              child: const Text(
                                 "See All",
-                                style: TextStyle(fontSize: 16, color: hexGreen),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: grey,
+                                ),
                               ),
                             )
                           ],
@@ -251,11 +240,14 @@ class _ExpenseBoardPageState extends State<ExpenseBoardPage> {
                     ),
                     child: Column(
                       children: [
+                        const SizedBox(
+                          height: 8,
+                        ),
                         Container(
                           height: 5,
-                          width: 100,
+                          width: 70,
                           decoration: BoxDecoration(
-                              color: grey,
+                              color: opBlack,
                               borderRadius: BorderRadius.circular(20)),
                         ),
                         Padding(
@@ -293,23 +285,23 @@ class _ExpenseBoardPageState extends State<ExpenseBoardPage> {
                                       ),
                                     ]),
                                 child: ListTile(
+                                  horizontalTitleGap: 20,
                                   enableFeedback: true,
                                   leading: Container(
-                                    height: 50,
-                                    width: 50,
+                                    height: cSize,
+                                    width: cSize,
                                     decoration: BoxDecoration(
                                         color: Theme.of(context)
                                             .colorScheme
                                             .secondaryContainer,
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
+                                        shape: BoxShape.circle),
                                     child: Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: const [
                                         Text(
-                                          "🚘",
-                                          style: TextStyle(fontSize: 30),
+                                          "💰",
+                                          style: TextStyle(fontSize: 26),
                                         ),
                                       ],
                                     ),
@@ -320,19 +312,21 @@ class _ExpenseBoardPageState extends State<ExpenseBoardPage> {
                                     children: [
                                       Text(
                                         data[index]["Name"].toString(),
-                                        style:
-                                            const TextStyle(fontSize: 20),
+                                        style: const TextStyle(fontSize: 20),
                                       ),
                                       Text(
                                         data[index]["Amount"].toString(),
                                         style: const TextStyle(
-                                            fontSize: 18,
+                                          fontSize: 18,
                                         ),
                                       ),
                                     ],
                                   ),
-                                  subtitle:
-                                      Text(data[index]["Date"].toString()),
+                                  subtitle: Text(
+                                    data[index]["Date"].toString(),
+                                    style: const TextStyle(
+                                        fontSize: 16, color: Colors.teal),
+                                  ),
                                 ),
                               );
                             },
@@ -347,7 +341,7 @@ class _ExpenseBoardPageState extends State<ExpenseBoardPage> {
 
             //Savings Widget
             Padding(
-              padding: const EdgeInsets.fromLTRB(15, 200, 0, 0),
+              padding: const EdgeInsets.fromLTRB(15, 210, 0, 0),
               child: SizedBox(
                 height: 170,
                 child: ListView.builder(
@@ -464,7 +458,7 @@ class _ExpenseBoardPageState extends State<ExpenseBoardPage> {
                           });
                         } else {}
                       },
-                      style: const TextStyle(fontSize: 18),
+                      style: const TextStyle(fontSize: 16),
                       readOnly: true,
                       controller: dateInputController,
                       decoration: const InputDecoration(
@@ -520,25 +514,92 @@ class _ExpenseBoardPageState extends State<ExpenseBoardPage> {
                 ),
               ),
               const SizedBox(
-                height: 20,
+                height: 10,
               ),
-              SizedBox(
-                height: 60,
-                width: 150,
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll(
-                      newHexGreen,
-                    ),
-                  ),
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                    } else {
-                      EasyLoading.showError("Please fill in the form");
-                    }
-                  },
-                  child: const Text("Confirm"),
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                      height: 60,
+                      width: 160,
+                      child: TextButton(
+                          style: ButtonStyle(
+                              shape: MaterialStatePropertyAll(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20))),
+                              splashFactory: InkSplash.splashFactory,
+                              overlayColor: MaterialStatePropertyAll(
+                                  Colors.grey.shade400)),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            "Cancel",
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .primaryContainer,
+                            ),
+                          ))
+                      // ElevatedButton(
+                      //   style: ButtonStyle(
+                      //     overlayColor: const MaterialStatePropertyAll(
+                      //       Colors.white12,
+                      //     ),
+                      //     backgroundColor: MaterialStatePropertyAll(
+                      //       opBlack,
+                      //     ),
+                      //   ),
+                      //   onPressed: () {
+                      //     dateInputController.clear();
+                      //     remarkController.clear();
+                      //     amountController.clear();
+                      //     Navigator.pop(context);
+                      //   },
+                      //   child: Text(
+                      //     "Cancel",
+                      //     style: TextStyle(
+                      //         color:
+                      //             Theme.of(context).colorScheme.inversePrimary),
+                      //   ),
+                      // ),
+                      ),
+                  SizedBox(
+                      height: 60,
+                      width: 160,
+                      child: TextButton(
+                          style: ButtonStyle(
+                              shape: MaterialStatePropertyAll(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20))),
+                              splashFactory: InkSplash.splashFactory,
+                              overlayColor: MaterialStatePropertyAll(
+                                  Colors.grey.shade400)),
+                          onPressed: () {},
+                          child: const Text(
+                            "Confirm",
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.pinkAccent,
+                                fontWeight: FontWeight.bold),
+                          ))
+                      // ElevatedButton(
+                      //   style: ButtonStyle(
+                      //     backgroundColor: MaterialStatePropertyAll(
+                      //       newHexGreen,
+                      //     ),
+                      //   ),
+                      //   onPressed: () {
+                      //     if (_formKey.currentState!.validate()) {
+                      //     } else {
+                      //       EasyLoading.showError("Please fill in the form");
+                      //     }
+                      //   },
+                      //   child: const Text("Confirm"),
+                      // ),
+                      ),
+                ],
               ),
               const SizedBox(
                 height: 20,

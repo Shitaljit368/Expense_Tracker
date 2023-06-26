@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 ThemeData darkTheme = ThemeData(
+
   appBarTheme: AppBarTheme(
     backgroundColor: opBlack,
   ),
@@ -16,7 +17,8 @@ ThemeData darkTheme = ThemeData(
     secondary: Colors.grey.shade800, //bottom sheet
     secondaryContainer: Colors.grey.shade600,
     inversePrimary: white, //bottom sheet
-  ),
+    onSecondary: Colors.white24 ),
+  
   inputDecorationTheme: InputDecorationTheme(
     contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 19),
     fillColor: Colors.grey.shade900,
