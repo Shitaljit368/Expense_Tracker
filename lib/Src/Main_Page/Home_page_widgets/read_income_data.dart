@@ -8,7 +8,9 @@ import 'package:intl/intl.dart';
 import '../../../Constant/colors.dart';
 
 class ReadIcomeDataPage extends StatefulWidget {
-  const ReadIcomeDataPage({super.key});
+  const ReadIcomeDataPage({
+    super.key,
+  });
 
   @override
   State<ReadIcomeDataPage> createState() => _MyWidgetState();
@@ -35,6 +37,7 @@ class _MyWidgetState extends State<ReadIcomeDataPage> {
         if (snapshot.hasData) {
           var d = snapshot.data?.data();
           var f = d?["incomes"] as List;
+
           log(d.toString());
 
           if (d == null || d["incomes"].length == 0) {
@@ -366,7 +369,7 @@ class _MyWidgetState extends State<ReadIcomeDataPage> {
 
                               log(listReceiver[i].toString());
 
-                                  listReceiver.removeAt(
+                              listReceiver.removeAt(
                                   listReceiver.indexOf(listReceiver[i]));
                               log(d.toString());
                               var uploadAsList = listReceiver

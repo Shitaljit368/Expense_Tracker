@@ -1,4 +1,5 @@
 import 'package:exptracker/Constant/colors.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 class ChartPage extends StatelessWidget {
@@ -29,10 +30,22 @@ class ChartPage extends StatelessWidget {
             Expanded(
                 child: TabBarView(children: [
               Container(
-                color: opBlack,
+                color: Theme.of(context).colorScheme.background,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 50),
+                  child: BarChart(
+                    BarChartData(maxY: 100, minY: 0),
+                  ),
+                ),
               ),
               Container(
-                color: Colors.red,
+                color: Theme.of(context).colorScheme.background,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 50),
+                  child: BarChart(
+                    BarChartData(maxY: 100, minY: 0),
+                  ),
+                ),
               )
             ]))
           ],

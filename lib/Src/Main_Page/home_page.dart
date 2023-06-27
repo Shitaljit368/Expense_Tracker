@@ -1,14 +1,12 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:exptracker/Src/Main_Page/Home_page_widgets/future_plans.dart';
 import 'package:exptracker/Src/Router/router.gr.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
 import '../../Constant/colors.dart';
-import '../../Constant/sizes.dart';
+import 'Home_page_widgets/read_plans_home.dart';
+import 'Home_page_widgets/read_recent_data.dart';
 
 class ExpenseBoardPage extends StatefulWidget {
   const ExpenseBoardPage({super.key});
@@ -30,11 +28,7 @@ class _ExpenseBoardPageState extends State<ExpenseBoardPage> {
     await FirebaseAuth.instance.signOut();
   }
 
-  List<Map<String, dynamic>> data = [
-    {"Name": "Food", "Amount": -500, "Date": "02/05/2023"},
-    {"Name": "Fuel", "Amount": -555, "Date": "05/05/2023"},
-    {"Name": "Cloths", "Amount": -3000, "Date": "10/05/2023"},
-  ];
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -263,74 +257,9 @@ class _ExpenseBoardPageState extends State<ExpenseBoardPage> {
                             ],
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 210,
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            physics: const BouncingScrollPhysics(),
-                            itemCount: data.length,
-                            itemBuilder: (context, index) {
-                              return Slidable(
-                                dragStartBehavior: DragStartBehavior.start,
-                                endActionPane: ActionPane(
-                                    extentRatio: 0.3,
-                                    motion: const ScrollMotion(),
-                                    children: [
-                                      SlidableAction(
-                                        onPressed: (context) {},
-                                        backgroundColor: Colors.red,
-                                        foregroundColor: Colors.white,
-                                        icon: Icons.delete,
-                                        label: 'Delete',
-                                      ),
-                                    ]),
-                                child: ListTile(
-                                  horizontalTitleGap: 20,
-                                  enableFeedback: true,
-                                  leading: Container(
-                                    height: cSize,
-                                    width: cSize,
-                                    decoration: BoxDecoration(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondaryContainer,
-                                        shape: BoxShape.circle),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: const [
-                                        Text(
-                                          "💰",
-                                          style: TextStyle(fontSize: 26),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  title: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        data[index]["Name"].toString(),
-                                        style: const TextStyle(fontSize: 20),
-                                      ),
-                                      Text(
-                                        data[index]["Amount"].toString(),
-                                        style: const TextStyle(
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  subtitle: Text(
-                                    data[index]["Date"].toString(),
-                                    style: const TextStyle(
-                                        fontSize: 16, color: Colors.teal),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
+                          child:ReadRecentDataPage(),
                         )
                       ],
                     ),
@@ -340,19 +269,11 @@ class _ExpenseBoardPageState extends State<ExpenseBoardPage> {
             ),
 
             //Savings Widget
-            Padding(
-              padding: const EdgeInsets.fromLTRB(15, 210, 0, 0),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(15, 210, 0, 0),
               child: SizedBox(
                 height: 170,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  physics: const BouncingScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: 3,
-                  itemBuilder: (context, index) {
-                    return const SavingsWidget();
-                  },
-                ),
+                child: ReadFutureOnHome()
               ),
             ),
           ],

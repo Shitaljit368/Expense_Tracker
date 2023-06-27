@@ -1,10 +1,13 @@
-import 'package:auto_route/auto_route.dart';
-import 'package:exptracker/Src/Router/router.gr.dart';
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
 
 import '../../Constant/colors.dart';
+import 'Home_page_widgets/read_future_data.dart';
 
 class MySavingsListPage extends StatefulWidget {
   const MySavingsListPage({super.key});
@@ -17,21 +20,110 @@ class _MySavingsListPageState extends State<MySavingsListPage> {
   TextEditingController remarkController = TextEditingController();
   TextEditingController amountController = TextEditingController();
   TextEditingController dateInputController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final user = FirebaseAuth.instance.currentUser!;
+  CollectionReference incomesCollection =
+      FirebaseFirestore.instance.collection('users');
+  int? ttotalAmount;
+
+  Future<void> addData() async {
+    final CollectionReference incomesCollection =
+        FirebaseFirestore.instance.collection("users");
+    Map<String, dynamic> newIncomeData = {
+      "name": remarkController.text,
+      "image": "",
+      "amount": amountController.text,
+      "date": dateInputController.text,
+    };
+
+    log(newIncomeData.toString());
+    DocumentReference documentRef = incomesCollection.doc(user.email);
+    documentRef.update({
+      'future_plans': FieldValue.arrayUnion([newIncomeData])
+    }).then((_) {
+      log("Income data added");
+    }).catchError((error) {
+      log("Failed to add income data: $error");
+    });
+  }
+
+
+
   @override
   void initState() {
     dateInputController.text = ""; //set the initial value of text field
     super.initState();
   }
 
-  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
+    incomesCollection.doc(user.email).get().then((documentSnapshot) {
+      if (documentSnapshot.exists) {
+        // List<dynamic> incomes = documentSnapshot.data()['incomes'];
+        var incomes = documentSnapshot["future_plans"] as List;
+        int totalAmount = 0;
+
+        for (var income in incomes) {
+          int? amount = int.tryParse(income['amount'].replaceAll(',', ''));
+          if (amount != null) {
+            totalAmount += amount;
+            ttotalAmount = totalAmount;
+          }
+        }
+
+        log('Total Amount: $totalAmount');
+      } else {
+        log('Document does not exist');
+      }
+    }).catchError((error) {
+      log('Error retrieving data from Firestore: $error');
+    });
+
     return Scaffold(
       appBar: AppBar(
         actions: [
           IconButton(
               onPressed: () {
-                showModalBottomSheet(
+                addItem(context);
+              },
+              icon: const Icon(Icons.add))
+        ],
+        elevation: 0,
+        centerTitle: true,
+        title: const Text("My Incomes"),
+      ),
+      backgroundColor: Theme.of(context).colorScheme.background,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              height: 30,
+              width: double.infinity,
+              color: opBlack,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    "Total Amount: $ttotalAmount",
+                    style: const TextStyle(fontSize: 18, color: white),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 1,
+            ),
+            const ReadFutureDataPage(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<dynamic> addItem(BuildContext context) {
+    return showModalBottomSheet(
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(25.0),
@@ -142,6 +234,7 @@ class _MySavingsListPageState extends State<MySavingsListPage> {
                   SizedBox(
                     width: 155,
                     child: TextFormField(
+                      controller: amountController,
                       keyboardType: const TextInputType.numberWithOptions(),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -172,6 +265,7 @@ class _MySavingsListPageState extends State<MySavingsListPage> {
                   }
                   return null;
                 },
+                controller: remarkController,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
                   hintText: 'Remark',
@@ -204,6 +298,7 @@ class _MySavingsListPageState extends State<MySavingsListPage> {
                         dateInputController.clear();
                         remarkController.clear();
                         amountController.clear();
+
                         Navigator.pop(context);
                       },
                       child: Text(
@@ -225,6 +320,15 @@ class _MySavingsListPageState extends State<MySavingsListPage> {
                       ),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
+                          addData().whenComplete(
+                            () {
+                              Navigator.pop(context);
+                              amountController.clear();
+                              dateInputController.clear();
+                              remarkController.clear();
+                              return EasyLoading.showSuccess("new task added!");
+                            },
+                          );
                         } else {
                           EasyLoading.showError("Please fill in the form");
                         }
@@ -240,39 +344,6 @@ class _MySavingsListPageState extends State<MySavingsListPage> {
             ],
           ),
         ),
-      ),
-    );
-              },
-              icon: const Icon(Icons.add))
-        ],
-        elevation: 0,
-        centerTitle: true,
-        title: const Text("My Future plans"),
-      ),
-      backgroundColor: Theme.of(context).colorScheme.background,
-      body: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            height: 30,
-            width: double.infinity,
-            color: opBlack,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: const [
-                Text(
-                  "Total: 1700",
-                  style: TextStyle(fontSize: 18, color: white),
-                ),
-              ],
-            ),
-          ),
-          ElevatedButton(
-              onPressed: () {
-                context.router.push(const GetStartedRoute());
-              },
-              child: const Text("On Boarding"))
-        ],
       ),
     );
   }
