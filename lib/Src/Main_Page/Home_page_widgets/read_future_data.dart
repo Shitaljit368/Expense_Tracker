@@ -260,47 +260,73 @@ class _MyWidgetState extends State<ReadFutureDataPage> {
                                         ),
                                         Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.spaceEvenly,
                                           children: [
                                             SizedBox(
-                                              height: 60,
-                                              width: 160,
-                                              child: ElevatedButton(
-                                                style: ButtonStyle(
-                                                  overlayColor:
-                                                      const MaterialStatePropertyAll(
-                                                    Colors.white12,
-                                                  ),
-                                                  backgroundColor:
-                                                      MaterialStatePropertyAll(
-                                                    opBlack,
-                                                  ),
-                                                ),
-                                                onPressed: () {
-                                                  dateInputController.clear();
-                                                  remarkController.clear();
-                                                  amountController.clear();
-                                                  Navigator.pop(context);
-                                                },
-                                                child: Text(
-                                                  "Cancel",
-                                                  style: TextStyle(
+                                              width: 150,
+                                              child: TextButton(
+                                                  style: ButtonStyle(
+                                                      shape: MaterialStatePropertyAll(
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          20))),
+                                                      splashFactory: InkSparkle
+                                                          .constantTurbulenceSeedSplashFactory,
+                                                      overlayColor:
+                                                          MaterialStatePropertyAll(
+                                                              Colors.grey
+                                                                  .shade100)),
+                                                  onPressed: () {
+                                                    dateInputController.clear();
+                                                    remarkController.clear();
+                                                    amountController.clear();
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text(
+                                                    "Cancel",
+                                                    style: TextStyle(
+                                                      fontSize: 20,
                                                       color: Theme.of(context)
                                                           .colorScheme
-                                                          .inversePrimary),
-                                                ),
-                                              ),
+                                                          .primaryContainer,
+                                                    ),
+                                                  )),
                                             ),
-                                            SizedBox(
-                                              height: 60,
-                                              width: 160,
+                                            Container(
+                                              height: 50,
+                                              width: 150,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(30),
+                                                  gradient:
+                                                      const LinearGradient(
+                                                          colors: [
+                                                        Colors.tealAccent,
+                                                        Colors.deepPurple,
+                                                      ]),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                        offset: const Offset(
+                                                            10, 10),
+                                                        blurRadius: 30,
+                                                        color: Colors.black
+                                                            .withOpacity(0.15))
+                                                  ]),
                                               child: ElevatedButton(
-                                                style: ButtonStyle(
-                                                  backgroundColor:
-                                                      MaterialStatePropertyAll(
-                                                    newHexGreen,
-                                                  ),
-                                                ),
+                                                style: ElevatedButton.styleFrom(
+                                                    backgroundColor: Colors
+                                                        .transparent,
+                                                    foregroundColor:
+                                                        Colors.transparent,
+                                                    elevation: 0,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        30))),
                                                 onPressed: () async {
                                                   f[i]["name"] =
                                                       remarkController.text;
@@ -336,7 +362,12 @@ class _MyWidgetState extends State<ReadFutureDataPage> {
                                                   });
                                                   // print("success $data");
                                                 },
-                                                child: const Text("Confirm"),
+                                                child: const Text(
+                                                  "Add",
+                                                  style: TextStyle(
+                                                      color: white,
+                                                      fontSize: 20),
+                                                ),
                                               ),
                                             ),
                                           ],
@@ -434,14 +465,18 @@ class _MyWidgetState extends State<ReadFutureDataPage> {
                       title: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            f[i]["name"].toString(),
-                            style: const TextStyle(fontSize: 20),
+                          FittedBox(
+                            child: Text(
+                              f[i]["name"].toString(),
+                              style: const TextStyle(fontSize: 20),
+                            ),
                           ),
-                          Text(
-                            "+${f[i]["amount"]}",
-                            style: const TextStyle(
-                              fontSize: 18,
+                          FittedBox(
+                            child: Text(
+                              "+${f[i]["amount"]}",
+                              style: const TextStyle(
+                                fontSize: 18,
+                              ),
                             ),
                           ),
                         ],

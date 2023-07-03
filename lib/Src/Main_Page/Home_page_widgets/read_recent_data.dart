@@ -15,12 +15,7 @@ class ReadRecentDataPage extends StatefulWidget {
 }
 
 class _MyWidgetState extends State<ReadRecentDataPage> {
-  // TextEditingController remarkController = TextEditingController();
-  // TextEditingController amountController = TextEditingController();
-  // TextEditingController dateInputController = TextEditingController();
-  // // TextEditingController imageController = TextEditingController();
-  // // CollectionReference firestore =
-  // //     FirebaseFirestore.instance.collection('users');
+
   final user = FirebaseAuth.instance.currentUser!;
 
   @override
@@ -101,7 +96,7 @@ class _MyWidgetState extends State<ReadRecentDataPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: const [
                               Text(
-                                "💰",
+                                "R",
                                 style: TextStyle(fontSize: 26),
                               ),
                             ],
@@ -118,14 +113,18 @@ class _MyWidgetState extends State<ReadRecentDataPage> {
                         title: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              f[i]["name"].toString(),
-                              style: const TextStyle(fontSize: 20),
+                            FittedBox(
+                              child: Text(
+                                f[i]["name"].toString(),
+                                style: const TextStyle(fontSize: 20),
+                              ),
                             ),
-                            Text(
-                              "+${f[i]["amount"]}",
-                              style: const TextStyle(
-                                fontSize: 18,
+                            FittedBox(
+                              child: Text(
+                                "${f[i]["amount"]}",
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                ),
                               ),
                             ),
                           ],
@@ -137,18 +136,17 @@ class _MyWidgetState extends State<ReadRecentDataPage> {
                         ),
                       ),
                     ),
-                    Divider(
-                      color: Theme.of(context).colorScheme.onSecondary,
-                      indent: 65,
-                      endIndent: 20,
-                    )
+                    
                   ],
                 );
               },
             );
           }
         } else {
-          return const CircularProgressIndicator.adaptive();
+          return const SizedBox(
+            height: 10,
+            width: 10,
+            child: CircularProgressIndicator.adaptive());
         }
       },
     );

@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:auto_route/auto_route.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:exptracker/Src/Router/router.gr.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -21,14 +24,16 @@ class _ExpenseBoardPageState extends State<ExpenseBoardPage> {
   TextEditingController remarkController = TextEditingController();
   TextEditingController amountController = TextEditingController();
   TextEditingController dateInputController = TextEditingController();
+  num incomeTotal = 0;
+  num expenseTotal = 0;
+  num finalTotal = 0;
+
 
   final _formKey = GlobalKey<FormState>();
 
   void signUserOut() async {
     await FirebaseAuth.instance.signOut();
   }
-
- 
 
   @override
   Widget build(BuildContext context) {
@@ -129,15 +134,60 @@ class _ExpenseBoardPageState extends State<ExpenseBoardPage> {
                               const SizedBox(
                                 height: 15,
                               ),
-                              const Text(
-                                "0",
-                                style: TextStyle(
-                                  color: white,
-                                  fontSize: 42,
-                                ),
+                              StreamBuilder(
+                                stream: FirebaseFirestore.instance
+                                    .collection("users")
+                                    .doc(user.email)
+                                    .snapshots(),
+                                builder: (context,
+                                    AsyncSnapshot<
+                                            DocumentSnapshot<
+                                                Map<String, dynamic>>>
+                                        snapshot) {
+                                  if (snapshot.hasData) {
+                                    var d = snapshot.data?.data();
+                                    var f = d?["incomes"] as List;
+                                    int totalAmount = 0;
+                                    for (var income in f) {
+                                      int? amount = int.tryParse(
+                                          income['amount'].replaceAll(',', ''));
+                                      if (amount != null) {
+                                        totalAmount += amount;
+                                        incomeTotal = totalAmount;
+                                      }
+                                    }
+
+                                    log(totalAmount.toString());
+                                  }
+                                  if (snapshot.hasData) {
+                                    var d = snapshot.data?.data();
+                                    var f = d?["expenses"] as List;
+                                    int totalAmount = 0;
+                                    for (var income in f) {
+                                      int? amount = int.tryParse(
+                                          income['amount'].replaceAll(',', ''));
+                                      if (amount != null) {
+                                        totalAmount += amount;
+                                        expenseTotal = totalAmount;
+                                      }
+                                    }
+
+                                    log(totalAmount.toString());
+                                  }
+                                  finalTotal = (incomeTotal - expenseTotal);
+                                  return FittedBox(
+                                    child: Text(
+                                      "$finalTotal",
+                                      style: const TextStyle(
+                                        color: white,
+                                        fontSize: 38,
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
                               const SizedBox(
-                                height: 10,
+                                height: 20,
                               ),
                               Row(
                                 mainAxisAlignment:
@@ -155,12 +205,42 @@ class _ExpenseBoardPageState extends State<ExpenseBoardPage> {
                                       const SizedBox(
                                         height: 10,
                                       ),
-                                      Text(
-                                        "+0",
-                                        style: TextStyle(
-                                            fontSize: 26,
-                                            color: Colors.greenAccent
-                                                .withOpacity(0.5)),
+                                      StreamBuilder(
+                                        stream: FirebaseFirestore.instance
+                                            .collection("users")
+                                            .doc(user.email)
+                                            .snapshots(),
+                                        builder: (context,
+                                            AsyncSnapshot<
+                                                    DocumentSnapshot<
+                                                        Map<String, dynamic>>>
+                                                snapshot) {
+                                          if (snapshot.hasData) {
+                                            var d = snapshot.data?.data();
+                                            var f = d?["incomes"] as List;
+                                            int totalAmount = 0;
+                                            for (var income in f) {
+                                              int? amount = int.tryParse(
+                                                  income['amount']
+                                                      .replaceAll(',', ''));
+                                              if (amount != null) {
+                                                totalAmount += amount;
+                                                incomeTotal = totalAmount;
+                                              }
+                                            }
+
+                                            log(totalAmount.toString());
+                                          }
+                                          return FittedBox(
+                                            child: Text(
+                                              "+$incomeTotal",
+                                              style: TextStyle(
+                                                  fontSize: 20,
+                                                  color: Colors.greenAccent
+                                                      .withOpacity(0.5)),
+                                            ),
+                                          );
+                                        },
                                       ),
                                     ],
                                   ),
@@ -176,12 +256,42 @@ class _ExpenseBoardPageState extends State<ExpenseBoardPage> {
                                       const SizedBox(
                                         height: 10,
                                       ),
-                                      Text(
-                                        "-0",
-                                        style: TextStyle(
-                                            fontSize: 26,
-                                            color: Colors.redAccent
-                                                .withOpacity(0.8)),
+                                      StreamBuilder(
+                                        stream: FirebaseFirestore.instance
+                                            .collection("users")
+                                            .doc(user.email)
+                                            .snapshots(),
+                                        builder: (context,
+                                            AsyncSnapshot<
+                                                    DocumentSnapshot<
+                                                        Map<String, dynamic>>>
+                                                snapshot) {
+                                          if (snapshot.hasData) {
+                                            var d = snapshot.data?.data();
+                                            var f = d?["expenses"] as List;
+                                            int totalAmount = 0;
+                                            for (var income in f) {
+                                              int? amount = int.tryParse(
+                                                  income['amount']
+                                                      .replaceAll(',', ''));
+                                              if (amount != null) {
+                                                totalAmount += amount;
+                                                expenseTotal = totalAmount;
+                                              }
+                                            }
+
+                                            log(totalAmount.toString());
+                                          }
+                                          return FittedBox(
+                                            child: Text(
+                                              "-$expenseTotal",
+                                              style: TextStyle(
+                                                  fontSize: 20,
+                                                  color: Colors.redAccent
+                                                      .withOpacity(0.7)),
+                                            ),
+                                          );
+                                        },
                                       ),
                                     ],
                                   ),
@@ -228,24 +338,14 @@ class _ExpenseBoardPageState extends State<ExpenseBoardPage> {
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.primary,
                       borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
+                        topLeft: Radius.circular(30),
+                        topRight: Radius.circular(30),
                       ),
                     ),
                     child: Column(
                       children: [
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        Container(
-                          height: 5,
-                          width: 70,
-                          decoration: BoxDecoration(
-                              color: opBlack,
-                              borderRadius: BorderRadius.circular(20)),
-                        ),
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 15, 0, 15),
+                          padding: const EdgeInsets.fromLTRB(20, 20, 0, 15),
                           child: Row(
                             children: const [
                               Text(
@@ -259,7 +359,7 @@ class _ExpenseBoardPageState extends State<ExpenseBoardPage> {
                         ),
                         const SizedBox(
                           height: 210,
-                          child:ReadRecentDataPage(),
+                          child: ReadRecentDataPage(),
                         )
                       ],
                     ),
@@ -270,10 +370,10 @@ class _ExpenseBoardPageState extends State<ExpenseBoardPage> {
 
             //Savings Widget
             const Padding(
-              padding: EdgeInsets.fromLTRB(15, 210, 0, 0),
+              padding: EdgeInsets.fromLTRB(5, 210, 0, 0),
               child: SizedBox(
                 height: 170,
-                child: ReadFutureOnHome()
+                child: ReadFutureOnHome(),
               ),
             ),
           ],
@@ -292,7 +392,8 @@ class _ExpenseBoardPageState extends State<ExpenseBoardPage> {
       backgroundColor: Theme.of(context).colorScheme.secondary,
       context: context,
       isScrollControlled: true,
-      builder: (context) => Padding(
+      builder: (context) {
+        return Padding(
         padding: EdgeInsets.only(
             top: 0,
             right: 25,
@@ -319,12 +420,13 @@ class _ExpenseBoardPageState extends State<ExpenseBoardPage> {
                   ),
                 ],
               ),
+              
               const SizedBox(
                 height: 10,
               ),
               const Center(
                 child: Text(
-                  "Create a new income item",
+                  "Quick Add",
                   style: TextStyle(fontSize: 18),
                 ),
               ),
@@ -370,7 +472,7 @@ class _ExpenseBoardPageState extends State<ExpenseBoardPage> {
                             );
                           },
                         );
-
+      
                         if (pickedDate != null) {
                           String formattedDate =
                               DateFormat('d,EEE,y').format(pickedDate);
@@ -438,88 +540,60 @@ class _ExpenseBoardPageState extends State<ExpenseBoardPage> {
                 height: 10,
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   SizedBox(
-                      height: 60,
-                      width: 160,
-                      child: TextButton(
-                          style: ButtonStyle(
-                              shape: MaterialStatePropertyAll(
-                                  RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20))),
-                              splashFactory: InkSplash.splashFactory,
-                              overlayColor: MaterialStatePropertyAll(
-                                  Colors.grey.shade400)),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text(
-                            "Cancel",
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .primaryContainer,
-                            ),
-                          ))
-                      // ElevatedButton(
-                      //   style: ButtonStyle(
-                      //     overlayColor: const MaterialStatePropertyAll(
-                      //       Colors.white12,
-                      //     ),
-                      //     backgroundColor: MaterialStatePropertyAll(
-                      //       opBlack,
-                      //     ),
-                      //   ),
-                      //   onPressed: () {
-                      //     dateInputController.clear();
-                      //     remarkController.clear();
-                      //     amountController.clear();
-                      //     Navigator.pop(context);
-                      //   },
-                      //   child: Text(
-                      //     "Cancel",
-                      //     style: TextStyle(
-                      //         color:
-                      //             Theme.of(context).colorScheme.inversePrimary),
-                      //   ),
-                      // ),
+                    width: 150,
+                    child: TextButton(
+                        style: ButtonStyle(
+                            shape: MaterialStatePropertyAll(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20))),
+                            splashFactory:
+                                InkSparkle.constantTurbulenceSeedSplashFactory,
+                            overlayColor:
+                                MaterialStatePropertyAll(Colors.grey.shade100)),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          "Cancel",
+                          style: TextStyle(
+                            fontSize: 20,
+                            color:
+                                Theme.of(context).colorScheme.primaryContainer,
+                          ),
+                        )),
+                  ),
+                  Container(
+                    height: 50,
+                    width: 150,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        gradient: const LinearGradient(colors: [
+                          Colors.tealAccent,
+                          Colors.deepPurple,
+                        ]),
+                        boxShadow: [
+                          BoxShadow(
+                              offset: const Offset(10, 10),
+                              blurRadius: 30,
+                              color: Colors.black.withOpacity(0.15))
+                        ]),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          foregroundColor: Colors.transparent,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30))),
+                      onPressed: () {},
+                      child: const Text(
+                        "Add",
+                        style: TextStyle(color: white, fontSize: 20),
                       ),
-                  SizedBox(
-                      height: 60,
-                      width: 160,
-                      child: TextButton(
-                          style: ButtonStyle(
-                              shape: MaterialStatePropertyAll(
-                                  RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20))),
-                              splashFactory: InkSplash.splashFactory,
-                              overlayColor: MaterialStatePropertyAll(
-                                  Colors.grey.shade400)),
-                          onPressed: () {},
-                          child: const Text(
-                            "Confirm",
-                            style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.pinkAccent,
-                                fontWeight: FontWeight.bold),
-                          ))
-                      // ElevatedButton(
-                      //   style: ButtonStyle(
-                      //     backgroundColor: MaterialStatePropertyAll(
-                      //       newHexGreen,
-                      //     ),
-                      //   ),
-                      //   onPressed: () {
-                      //     if (_formKey.currentState!.validate()) {
-                      //     } else {
-                      //       EasyLoading.showError("Please fill in the form");
-                      //     }
-                      //   },
-                      //   child: const Text("Confirm"),
-                      // ),
-                      ),
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(
@@ -528,7 +602,8 @@ class _ExpenseBoardPageState extends State<ExpenseBoardPage> {
             ],
           ),
         ),
-      ),
+      );
+      },
     );
   }
 }

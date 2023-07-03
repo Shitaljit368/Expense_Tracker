@@ -1,10 +1,16 @@
 import 'package:exptracker/Constant/colors.dart';
-import 'package:fl_chart/fl_chart.dart';
+import 'package:exptracker/Src/Main_Page/BarGraph/expenseBar.dart';
 import 'package:flutter/material.dart';
+import 'BarGraph/incomeBar.dart';
 
-class ChartPage extends StatelessWidget {
+class ChartPage extends StatefulWidget {
   const ChartPage({super.key});
 
+  @override
+  State<ChartPage> createState() => _ChartPageState();
+}
+
+class _ChartPageState extends State<ChartPage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -16,38 +22,35 @@ class ChartPage extends StatelessWidget {
             Container(
               color: opBlack,
               child: const TabBar(
-                indicatorColor: Colors.amber,
+                indicatorPadding: EdgeInsets.symmetric(horizontal: 60),
+                unselectedLabelColor: grey,
+                labelStyle: TextStyle(),
+                indicatorColor: Colors.cyanAccent,
+                labelColor: Colors.cyanAccent,
                 tabs: [
                   Tab(
-                    child: Text("Income"),
+                    child: Text(
+                      "Income",
+                      style: TextStyle(fontSize: 20),
+                    ),
                   ),
                   Tab(
-                    child: Text("Expenses"),
+                    child: Text(
+                      "Expenses",
+                      style: TextStyle(fontSize: 20),
+                    ),
                   ),
                 ],
               ),
             ),
-            Expanded(
-                child: TabBarView(children: [
-              Container(
-                color: Theme.of(context).colorScheme.background,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 50),
-                  child: BarChart(
-                    BarChartData(maxY: 100, minY: 0),
-                  ),
-                ),
+            const Expanded(
+              child: TabBarView(
+                children: [
+                  IncomesBar(),
+                  ExpenseBar(),
+                ],
               ),
-              Container(
-                color: Theme.of(context).colorScheme.background,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 50),
-                  child: BarChart(
-                    BarChartData(maxY: 100, minY: 0),
-                  ),
-                ),
-              )
-            ]))
+            )
           ],
         ),
       ),

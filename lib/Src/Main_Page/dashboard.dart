@@ -3,6 +3,7 @@ import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../AppBarTheme/custom_theme.dart';
 import '../../Color_Themes/dark_theme.dart';
@@ -167,7 +168,13 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                       style: TextStyle(fontSize: 25),
                                     ),
                                     const SizedBox(
-                                      height: 35,
+                                      height: 10,
+                                    ),
+                                    Divider(
+                                      color: Colors.grey.shade400,
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
                                     ),
                                     Row(
                                       mainAxisAlignment:
@@ -183,30 +190,39 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                             Navigator.pop(context);
                                           },
                                           child: const Text(
-                                            "NO",
+                                            "No",
                                             style: TextStyle(
                                                 fontSize: 20,
                                                 color: Colors.redAccent),
                                           ),
                                         ),
-                                        TextButton(
-                                          style: ButtonStyle(
-                                            overlayColor:
-                                                MaterialStatePropertyAll(
-                                                    Colors.grey.shade300),
+                                        SizedBox(
+                                          height: 40,
+                                          width: 90,
+                                          child: ElevatedButton(
+                                            style: const ButtonStyle(
+                                                backgroundColor:
+                                                    MaterialStatePropertyAll(
+                                                        Colors.teal),
+                                                elevation:
+                                                    MaterialStatePropertyAll(
+                                                        0)),
+                                            onPressed: () {
+                                              signUserOut().whenComplete(
+                                                () {
+                                                  Navigator.pop(context);
+                                                  EasyLoading.showSuccess(
+                                                      "Logged Out");
+                                                },
+                                              );
+                                            },
+                                            child: const Text(
+                                              "Yes",
+                                              style: TextStyle(
+                                                  fontSize: 20, color: white),
+                                            ),
                                           ),
-                                          onPressed: () {
-                                            signUserOut().whenComplete(() {
-                                              Navigator.pop(context);
-                                            });
-                                          },
-                                          child: const Text(
-                                            "YES",
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                color: Colors.teal),
-                                          ),
-                                        ),
+                                        )
                                       ],
                                     ),
                                   ],

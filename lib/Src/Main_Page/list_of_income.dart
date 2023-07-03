@@ -48,7 +48,26 @@ class _MyIncomeListPageState extends State<MyIncomeListPage> {
     });
   }
 
+  Future<void> addRecentData() async {
+    final CollectionReference recentCollection =
+        FirebaseFirestore.instance.collection("users");
+    Map<String, dynamic> newRecentData = {
+      "name": remarkController.text,
+      "image": "",
+      "amount": amountController.text,
+      "date": dateInputController.text,
+    };
 
+    log(newRecentData.toString());
+    DocumentReference documentRef = recentCollection.doc(user.email);
+    documentRef.update({
+      'recent_activities': FieldValue.arrayUnion([newRecentData])
+    }).then((_) {
+      log("Recent data added");
+    }).catchError((error) {
+      log("Failed to add recent data: $error");
+    });
+  }
 
   @override
   void initState() {
@@ -58,28 +77,6 @@ class _MyIncomeListPageState extends State<MyIncomeListPage> {
 
   @override
   Widget build(BuildContext context) {
-    incomesCollection.doc(user.email).get().then((documentSnapshot) {
-      if (documentSnapshot.exists) {
-        // List<dynamic> incomes = documentSnapshot.data()['incomes'];
-        var incomes = documentSnapshot["incomes"] as List;
-        int totalAmount = 0;
-
-        for (var income in incomes) {
-          int? amount = int.tryParse(income['amount'].replaceAll(',', ''));
-          if (amount != null) {
-            totalAmount += amount;
-            ttotalAmount = totalAmount;
-          }
-        }
-
-        log('Total Amount: $totalAmount');
-      } else {
-        log('Document does not exist');
-      }
-    }).catchError((error) {
-      log('Error retrieving data from Firestore: $error');
-    });
-
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -97,23 +94,50 @@ class _MyIncomeListPageState extends State<MyIncomeListPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              height: 30,
-              width: double.infinity,
-              color: opBlack,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    "Total Amount: $ttotalAmount",
-                    style: const TextStyle(fontSize: 18, color: white),
+            StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection("users")
+                  .doc(user.email)
+                  .snapshots(),
+              builder: (context,
+                  AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
+                      snapshot) {
+                if (snapshot.hasData) {
+                  var d = snapshot.data?.data();
+                  var f = d?["incomes"] as List;
+                  int totalAmount = 0;
+                  for (var income in f) {
+                    int? amount =
+                        int.tryParse(income['amount'].replaceAll(',', ''));
+                    if (amount != null) {
+                      totalAmount += amount;
+                      ttotalAmount = totalAmount;
+                    }
+                  }
+
+                  log(totalAmount.toString());
+                }
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  height: 30,
+                  width: double.infinity,
+                  color: opBlack,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      FittedBox(
+                        child: Text(
+                          "Total Amount: $ttotalAmount",
+                          style: const TextStyle(fontSize: 18, color: white),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                );
+              },
             ),
             const SizedBox(
-              height: 1,
+              height: 3,
             ),
             const ReadIcomeDataPage(),
           ],
@@ -280,48 +304,61 @@ class _MyIncomeListPageState extends State<MyIncomeListPage> {
                 height: 20,
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   SizedBox(
-                    height: 60,
-                    width: 160,
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        overlayColor: const MaterialStatePropertyAll(
-                          Colors.white12,
-                        ),
-                        backgroundColor: MaterialStatePropertyAll(
-                          opBlack,
-                        ),
-                      ),
-                      onPressed: () {
-                        dateInputController.clear();
-                        remarkController.clear();
-                        amountController.clear();
-
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        "Cancel",
-                        style: TextStyle(
+                    width: 150,
+                    child: TextButton(
+                        style: ButtonStyle(
+                            shape: MaterialStatePropertyAll(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20))),
+                            splashFactory:
+                                InkSparkle.constantTurbulenceSeedSplashFactory,
+                            overlayColor:
+                                MaterialStatePropertyAll(Colors.grey.shade100)),
+                        onPressed: () {
+                          dateInputController.clear();
+                          remarkController.clear();
+                          amountController.clear();
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          "Cancel",
+                          style: TextStyle(
+                            fontSize: 20,
                             color:
-                                Theme.of(context).colorScheme.inversePrimary),
-                      ),
-                    ),
+                                Theme.of(context).colorScheme.primaryContainer,
+                          ),
+                        )),
                   ),
-                  SizedBox(
-                    height: 60,
-                    width: 160,
+                  Container(
+                    height: 50,
+                    width: 150,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        gradient: const LinearGradient(colors: [
+                          Colors.tealAccent,
+                          Colors.deepPurple,
+                        ]),
+                        boxShadow: [
+                          BoxShadow(
+                              offset: const Offset(10, 10),
+                              blurRadius: 30,
+                              color: Colors.black.withOpacity(0.15))
+                        ]),
                     child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStatePropertyAll(
-                          newHexGreen,
-                        ),
-                      ),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          foregroundColor: Colors.transparent,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30))),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           addData().whenComplete(
                             () {
+                              addRecentData();
                               Navigator.pop(context);
                               amountController.clear();
                               dateInputController.clear();
@@ -333,7 +370,10 @@ class _MyIncomeListPageState extends State<MyIncomeListPage> {
                           EasyLoading.showError("Please fill in the form");
                         }
                       },
-                      child: const Text("Confirm"),
+                      child: const Text(
+                        "Add",
+                        style: TextStyle(color: white, fontSize: 20),
+                      ),
                     ),
                   ),
                 ],
